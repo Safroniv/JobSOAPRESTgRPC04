@@ -3,11 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicService", "ClinicService\ClinicService.csproj", "{7B0C8FE8-9169-4157-928E-F06E8FA123E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicService", "ClinicService\ClinicService.csproj", "{7B0C8FE8-9169-4157-928E-F06E8FA123E5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicService.Data", "ClinicService.Data\ClinicService.Data.csproj", "{9936AA0F-CE5A-4319-8626-AE709846E370}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicClient", "ClinicClient\ClinicClient.csproj", "{39813BB5-D1EE-4655-9234-6348A2952031}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CFCA4EBF-B886-4D1B-896C-18F4E8C47A70}"
+	ProjectSection(SolutionItems) = preProject
+		ef.readme.txt = ef.readme.txt
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountSample", "AccountSample\AccountSample.csproj", "{19AA0526-8FE9-4E29-9D60-A93D730635D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtSample", "JwtSample\JwtSample.csproj", "{9AF1D524-8858-4131-A256-7124109862E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +36,14 @@ Global
 		{39813BB5-D1EE-4655-9234-6348A2952031}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39813BB5-D1EE-4655-9234-6348A2952031}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39813BB5-D1EE-4655-9234-6348A2952031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19AA0526-8FE9-4E29-9D60-A93D730635D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19AA0526-8FE9-4E29-9D60-A93D730635D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19AA0526-8FE9-4E29-9D60-A93D730635D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19AA0526-8FE9-4E29-9D60-A93D730635D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AF1D524-8858-4131-A256-7124109862E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AF1D524-8858-4131-A256-7124109862E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AF1D524-8858-4131-A256-7124109862E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AF1D524-8858-4131-A256-7124109862E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

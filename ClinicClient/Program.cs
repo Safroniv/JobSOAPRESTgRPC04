@@ -1,6 +1,5 @@
-﻿using ClinicServiceNamespace;
-using Grpc.Net.Client;
-using static ClinicServiceNamespace.ClinicService;
+﻿using Grpc.Net.Client;
+using static ClinicServiceProtos.ClinicClientService;
 
 namespace ClinicClient
 {
@@ -10,46 +9,31 @@ namespace ClinicClient
         {
             AppContext.SetSwitch(
                 "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            var channel = GrpcChannel.ForAddress("http://localhost:5001");
 
-            using var channel = GrpcChannel.ForAddress("http://localhost:5888");
-            ClinicServiceClient clinicServiceClient = new ClinicServiceClient(channel);
 
-            var createClientResponse = clinicServiceClient.CreateClinet(new CreateClientRequest
+            ClinicClientServiceClient client = new ClinicClientServiceClient(channel);
+
+            var createClientResponse = client.CreateClient(new ClinicServiceProtos.CreateClientRequest
             {
-                Document = "DOC34 235",
+                Document = "PASS321",
                 FirstName = "Иван",
-                Patronymic = "Николаевич ",
-                Surname = "Сафронов"
+                Surname = "Сафронов",
+                Patronymic = "Николаевич"
             });
 
-            if (createClientResponse.ErrCode == 0)
-            {
-                Console.WriteLine($"Client #{createClientResponse.ClientId} created successfully.");
-            }
-            else
-            {
-                Console.WriteLine($"Create client error.\nErrorCode: {createClientResponse.ErrCode}\nErrorMessage: {createClientResponse.ErrMessage}");
-            }
+            Console.WriteLine($"Client ({createClientResponse.ClientId}) created successfully.");
 
-            var getClientResponse = clinicServiceClient.GetClients(new GetClientsRequest());
+            var getClientsResponse = client.GetClients(new ClinicServiceProtos.GetClientsRequest());
 
-            if (createClientResponse.ErrCode == 0)
+            Console.WriteLine("Clients:");
+            Console.WriteLine("========\n");
+            foreach (var clientObj in getClientsResponse.Clients)
             {
-                Console.WriteLine("Clients");
-                Console.WriteLine("=======\n");
-
-                foreach (var client in getClientResponse.Clients)
-                {
-                    Console.WriteLine($"#{client.ClientId} {client.Document} {client.Surname} {client.FirstName} {client.Patronymic}");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"Get clients error.\nErrorCode: {getClientResponse.ErrCode}\nErrorMessage: {getClientResponse.ErrMessage}");
+                Console.WriteLine($"{clientObj.Document} >> {clientObj.Surname} {clientObj.FirstName}");
             }
 
             Console.ReadKey();
-
         }
     }
 }
