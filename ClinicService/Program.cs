@@ -1,7 +1,11 @@
 using ClinicService.Data;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
+using ClinicService.Services.Impl;
+using ClinicService.Services;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Net;
+using NLog.Web;
 
 namespace ClinicService
 {
@@ -11,11 +15,11 @@ namespace ClinicService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            #region Configure gRPC
 
             builder.WebHost.ConfigureKestrel(options =>
             {
-                options.Listen(IPAddress.Any, 5888, listenOptions =>
+                options.Listen(IPAddress.Any, 5001, listenOptions =>
                 {
                     listenOptions.Protocols = HttpProtocols.Http2;
                 });
@@ -23,7 +27,31 @@ namespace ClinicService
 
             builder.Services.AddGrpc();
 
-            #region Configure EF DBContext Service (CardStorageService Database)
+            #endregion
+
+            #region Configure logging service
+
+            builder.Services.AddHttpLogging(logging =>
+            {
+                logging.LoggingFields = HttpLoggingFields.All | HttpLoggingFields.RequestQuery;
+                logging.RequestBodyLogLimit = 4096;
+                logging.ResponseBodyLogLimit = 4096;
+                logging.RequestHeaders.Add("Authorization");
+                logging.RequestHeaders.Add("X-Real-IP");
+                logging.RequestHeaders.Add("X-Forwarded-For");
+            });
+
+
+            builder.Host.ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddConsole();
+
+            }).UseNLog(new NLogAspNetCoreOptions() { RemoveLoggerFactoryFilter = true });
+
+            #endregion
+
+            #region Configure EF DBContext Service (Database)
 
             builder.Services.AddDbContext<ClinicServiceDbContext>(options =>
             {
@@ -31,6 +59,15 @@ namespace ClinicService
             });
 
             #endregion
+
+            #region Configure Repository Services
+
+            builder.Services.AddScoped<IPetRepository, PetRepository>();
+            builder.Services.AddScoped<IConsultationRepository, ConsultationRepository>();
+            builder.Services.AddScoped<IClientRepository, ClientRepository>();
+
+            #endregion
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -48,14 +85,21 @@ namespace ClinicService
 
             app.UseAuthorization();
 
+            //app.UseHttpLogging();
+            app.UseWhen( // Пообещали починить в 7 .net !
+                ctx => ctx.Request.ContentType != "application/grpc",
+                builder =>
+                {
+                    builder.UseHttpLogging();
+                }
+            );
 
             app.MapControllers();
 
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<ClinicService.Services.Impl.ClinicService>();
+                endpoints.MapGrpcService<ClinicClientService>();
             });
 
             app.Run();

@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ClinicService.Data
 {
     [Table("Clients")]
     public class Client
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int ClientId { get; set; }
 
         [Column]
         [StringLength(50)]
@@ -31,11 +32,9 @@ namespace ClinicService.Data
         public string? Patronymic { get; set; }
 
         [InverseProperty(nameof(Pet.Client))]
-        public ICollection<Pet> Pets { get; set; } = new HashSet<Pet>();
+        public virtual ICollection<Pet> Pets { get; set; } = new HashSet<Pet>();
 
         [InverseProperty(nameof(Consultation.Client))]
-        public ICollection<Consultation> Consultations { get; set; } = new HashSet<Consultation>();
-
-
+        public virtual ICollection<Consultation> Consultations { get; set; } = new HashSet<Consultation>();
     }
 }
